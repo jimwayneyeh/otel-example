@@ -1,7 +1,7 @@
 package tw.jimwayneyeh.example.otel;
 
-import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -11,14 +11,16 @@ import java.security.SecureRandom;
 @Component
 public class Run implements CommandLineRunner {
     private SecureRandom random = new SecureRandom();
+    @Autowired
+    private FakeEventProcessor processor;
     @Override
     public void run(String... args) throws Exception {
         log.info("Run");
 
-        int loop = 100;
+        int loop = 10;
         while(loop-- > 0) {
             var event = generateRandomEvent();
-            receiveEvent(event);
+            processor.receiveEvent(event);
         }
     }
 
@@ -39,15 +41,5 @@ public class Run implements CommandLineRunner {
                 .eventType(eventType)
                 .owner("owner-" + random.nextInt(10))
                 .build();
-    }
-
-    @Builder
-    class Event {
-        private String eventType;
-        private String owner;
-    }
-
-    private void receiveEvent(Event event) {
-        // Do nothing.
     }
 }
