@@ -22,6 +22,16 @@ public class Run implements CommandLineRunner {
             var event = generateRandomEvent();
             processor.receiveEvent(event);
         }
+
+        log.info("Sleep...");
+        Thread.sleep(1000);
+
+        log.info("2nd run");
+        loop = 10;
+        while(loop-- > 0) {
+            var event = generateRandomEvent();
+            processor.receiveEvent(event);
+        }
     }
 
     private Event generateRandomEvent() {
@@ -39,7 +49,7 @@ public class Run implements CommandLineRunner {
 
         return Event.builder()
                 .eventType(eventType)
-                .owner("owner-" + random.nextInt(10))
+                .owner("owner-" + random.nextInt(2))
                 .build();
     }
 }
