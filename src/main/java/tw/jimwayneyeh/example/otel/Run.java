@@ -41,21 +41,11 @@ public class Run implements CommandLineRunner {
     }
 
     private Event generateRandomEvent() {
-        var eventType = "";
-        switch (random.nextInt(3)) {
-            case 1:
-                eventType = "update";
-                break;
-            case 2:
-                eventType = "delete";
-                break;
-            default:
-                eventType = "create";
-        }
+        var eventType = "create";
 
         return Event.builder()
                 .eventType(eventType)
-                .owner("owner-" + random.nextInt(2))
+                .owner("owner-1")
                 .build();
     }
 }
