@@ -7,6 +7,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class FakeEventProcessor {
     public void receiveEvent(Event event) {
-        log.info("Receive: {}", event);
+        // log.info("Receive: {}", event);
     }
 }

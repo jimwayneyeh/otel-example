@@ -6,37 +6,43 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
+import java.util.concurrent.Executors;
 
 @Slf4j
 @Component
 public class Run implements CommandLineRunner {
     private SecureRandom random = new SecureRandom();
     @Autowired
-    private FakeEventProcessor processor;
+    private FakeEventProcessor processor1;
+    @Autowired
+    private FakeEventProcessor processor2;
+
     @Override
     public void run(String... args) throws Exception {
         log.info("Run");
 
-        int loop = 10;
-        while(loop-- > 0) {
-            var event = generateRandomEvent();
-            processor.receiveEvent(event);
-        }
+        produceEvents(1_000_000, 10);
 
-        log.info("Sleep...");
-        Thread.sleep(1000);
+        log.info("Done");
+    }
 
-        log.info("2nd run");
-        loop = 10;
-        while(loop-- > 0) {
-            var event = generateRandomEvent();
-            processor.receiveEvent(event);
+    private void produceEvents(int numOfEvents, int numOfThreads) {
+        var executor = Executors.newFixedThreadPool(numOfThreads);
+
+        for (int i = 0; i < numOfEvents; i++) {
+            executor.submit(() -> {
+                if (random.nextBoolean()) {
+                    processor1.receiveEvent(generateRandomEvent());
+                } else {
+                    processor2.receiveEvent(generateRandomEvent());
+                }
+            });
         }
     }
 
     private Event generateRandomEvent() {
         var eventType = "";
-        switch(random.nextInt(3)) {
+        switch (random.nextInt(3)) {
             case 1:
                 eventType = "update";
                 break;
